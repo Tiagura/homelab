@@ -16,10 +16,7 @@ This folder contains the configuration files, scripts, and SSL certificates for 
 │   ├── backup_vault.sh		# Backup to cloud automation script
 │   ├── log/
 │   └── setup.sh		# Script to install needed tools for backup
-└── ssl
-    ├── vaultwarden.crt
-    ├── vaultwarden.csr
-    └── vaultwarden.key
+└── ssl/            # Folder for certificates
 ```
 
 ## Reverse Proxy
@@ -86,7 +83,7 @@ These tools are essential for performing the backup process, compressing the dat
 
 ### Backup Process
 
-The backup process for Vaultwarden is based on the guidelines provided in the [Vaultwarden Wiki: Backing Up Your Vault](https://github.com/dani-garcia/vaultwarden/wiki/Backing-up-your-vault). The backup is managed by a script, scripts/backup_vault.sh, that automates the following steps:
+The backup process for Vaultwarden is based on the guidelines provided in the [Vaultwarden Wiki: Backing Up Your Vault](https://github.com/dani-garcia/vaultwarden/wiki/Backing-up-your-vault). The backup is managed by a script, (`scripts/backup_vault.sh`), that automates the following steps:
 
 1. **Stop the Vaultwarden Docker container** to ensure data consistency during the backup.
 2. **Back up the data directory**, which contains all the important Vaultwarden data.
@@ -119,7 +116,7 @@ To use the backup script for Vaultwarden, you need to configure several variable
    ```
    
 3. **`REMOTE_NAME`**:  
-   This variable represents the rclone remote name configured for your cloud storage (e.g., gdrive, remote, etc.). Replace "remote" with the name of your rclone remote.
+   This variable represents the rclone remote name configured for your storage (e.g., gdrive, dropbox, etc.). Replace "remote" with the name of your rclone remote.
    ```bash
    REMOTE_NAME="remote"
    ```
