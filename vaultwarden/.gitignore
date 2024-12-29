@@ -1,0 +1,14 @@
+# Ignore SSL certificates
+vaultwarden/ssl/
+
+# Ignore data folder
+vaultwarden/ssl/
+
+# Ignore other sensitive files
+*.crt
+*.csr
+*.key
+
+# Ignore logs or temporary files
+*.log
+
