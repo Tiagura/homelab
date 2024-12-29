@@ -21,16 +21,17 @@ This folder contains the configuration files, scripts, and SSL certificates for 
 
 ## Reverse Proxy
 
-The Vaultwarden service is deployed with **Nginx** as a reverse proxy. This setup ensures that Vaultwarden is only accessible through the proxy, and it is configured to enforce secure HTTPS access. 
+Vaultwarden is deployed with Nginx as a reverse proxy, ensuring it is only accessible through the specified domain and not by the server's IP address. Any requests with an incorrect `Host` header are blocked with a `403 Forbidden` error. The configuration also enforces secure HTTPS access, restricting Vaultwarden to the specified domain only.
 
 The **Nginx configuration** used is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). This configuration allows you to securely access your Vaultwarden instance through a domain name.
 
 ### Accessing Vaultwarden
 
-By default, you can access Vaultwarden using a domain like:
-''' vaultwarden.home.tm '''
+Per my configuration, Vaultwarden can be accessed using a domain like:
 
-If you wish to use a different domain name, you must update the `nginx.conf` file. Specifically, you should change the `server_name` directive, and other apperances of this value, to reflect your desired domain name.
+`vaultwarden.home.tm`
+
+If you wish to use a different domain name, you need to update the `DOMAIN` variable in the `docker-compose.yml` file and modify the `nginx.conf` file. Specifically, change the `server_name` directive and any other occurrences of the domain name to reflect your desired domain.
 
 ### SSL Certificates
 
