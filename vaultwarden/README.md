@@ -18,39 +18,52 @@ This folder contains the configuration files, scripts, and SSL certificates for 
 │   └── setup.sh		# Script to install needed tools for backup
 └── ssl/            # Folder for certificates
 ```
+## Reverse Proxy Setup for Vaultwarden
 
-## Reverse Proxy
-
-Vaultwarden is deployed with Nginx as a reverse proxy, ensuring it is only accessible through the specified domain and not by the server's IP address. Any requests with an incorrect `Host` header are blocked with a `403 Forbidden` error. The configuration also enforces secure HTTPS access, restricting Vaultwarden to the specified domain only.
-
-The **Nginx configuration** used is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). This configuration allows you to securely access your Vaultwarden instance through a domain name.
-
-## Reverse Proxy
-
-Vaultwarden is deployed with Nginx as a reverse proxy, ensuring it is only accessible through the specified domain and not by the server's IP address. Any requests with an incorrect `Host` header are blocked with a `403 Forbidden` error. The configuration also enforces secure HTTPS access, restricting Vaultwarden to the specified domain only.
+Vaultwarden is deployed behind a local Nginx reverse proxy to ensure it is only accessible via a specified domain, preventing direct access through the server’s IP address. Any requests with an incorrect `Host` header will be blocked with a `403 Forbidden` error. This setup enforces secure HTTPS access, restricting Vaultwarden to the domain you’ve configured.
 
 ![Local Reverse Proxy Setup](images/localproxy.png)
 
-The **Nginx configuration** used is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). This configuration allows you to securely access your Vaultwarden instance through a domain name.
+The **Nginx configuration** is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). It allows secure access to your Vaultwarden instance using a custom domain name.
 
-If you have a general proxy for your services and you only want this proxy to access vaultwarden, change the following lines of the `nginx.conf` file under the appropriate location block:
+### Configuring Access
+
+
+
+
+
+
+## Reverse Proxy Setup for Vaultwarden
+
+Vaultwarden is deployed behind a local Nginx reverse proxy to ensure it is only accessible via a specified domain, preventing direct access through the server’s IP address. Any requests with an incorrect `Host` header will be blocked with a `403 Forbidden` error. This setup enforces secure HTTPS access, restricting Vaultwarden to the domain you’ve configured.
+
+![Local Reverse Proxy Setup](images/localproxy.png)
+
+The **Nginx configuration** is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). Modifications where made to only allow  secure access to your Vaultwarden instance using a custom domain name. 
+
+### Updating the Domain Name
+
+In this setup, Vaultwarden can only be accessed via a domain like:
+
+`vaultwarden.example.com`
+
+To use a different domain name, follow these steps:
+
+1. Update the `DOMAIN` variable in the `docker-compose.yml` file.
+2. Modify the `nginx.conf` file, specifically the `server_name` directive, and replace any occurrences of the old domain with your new one.
+
+### Configuring Dual Proxy Access
+
+![Dual Reverse Proxy Setup](images/dualproxy.png)
+
+If you have a general reverse proxy setup for multiple services and want to access vaultwarden only through this proxy, adjust the **nginx.conf** file by modifying the following lines inside the https server block:
 
 ```
 allow <general_reverse_proxy_ip>;
 deny all;
 ```
 
-![Dual Reverse Proxy Setup](images/dualproxy.png)
-
->**Note**: If your setup includes only a local reverse proxy ([image](images/localproxy.png)), you must remove these lines to allow your devices to access Vaultwarden.
-
-### Accessing Vaultwarden
-
-Per my configuration, Vaultwarden can only be accessed using a domain like:
-
-`vaultwarden.example.com`
-
-To use your different domain name, you need to update the `DOMAIN` variable in the `docker-compose.yml` file and modify the `nginx.conf` file. Specifically, change the `server_name` directive and any other occurrences of the domain name to reflect your desired domain.
+> **Important:** If you're using a **local reverse proxy** (as shown in the first image), remove these lines to allow devices on your local network to access Vaultwarden.
 
 ### SSL Certificates
 
