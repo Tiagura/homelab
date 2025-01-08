@@ -8,25 +8,27 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
 ## Setup Steps
 
 ### 1. Prerequisites
-1. **Access to the /dev/tun device** for LXC only:
-  Based on [official documentation](https://tailscale.com/kb/1130/lxc-unprivileged), in the Proxmox main shell do:
-  1. Stop the container:
-     ```bash
-     pct stop <container_id>
-     ```
-  2. Edit the LXC configuration file:
-     ```bash
-     nano /etc/pve/lxc/<container_id>.conf
-     ```
-  3. Add the following lines:
-     ```bash
-     lxc.cgroup2.devices.allow: c 10:200 rwm
-     lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
-     ```
-  4. Start the container:
-     ```bash
-     pct start <container_id>
-     ```
+1. **Access to the /dev/tun device** for LXC only: <br>
+   Based on [official documentation](https://tailscale.com/kb/1130/lxc-unprivileged), in the Proxmox main shell do: <br>
+
+   1. Stop the container:
+      ```bash
+      pct stop <container_id>
+      ```
+   2. Edit the LXC configuration file:
+      ```bash
+      nano /etc/pve/lxc/<container_id>.conf
+      ```
+   3. Add the following lines:
+      ```bash
+      lxc.cgroup2.devices.allow: c 10:200 rwm
+      lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
+      ```
+   4. Start the container:
+      ```bash
+      pct start <container_id>
+      ```
+
      
 2. **Install Git**:
   In the LXC shell do:
@@ -46,7 +48,7 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
    - Copy the generated key, as it will be required for authentication.
    
 
-> **Note**: If on proxmox and whish to use an LXC, consider using [Proxmox VE Helper-Scripts](https://community-scripts.github.io/ProxmoxVE/scripts), more specifically this [one] (https://community-scripts.github.io/ProxmoxVE/scripts?id=docker), to create the LXC container and also skip step 3. Be carefull to not create a privileged LXC.
+> **Note**: If on proxmox and whish to use an LXC, consider using [Proxmox VE Helper-Scripts](https://community-scripts.github.io/ProxmoxVE/scripts), more specifically this [one](https://community-scripts.github.io/ProxmoxVE/scripts?id=docker), to create the LXC container and also skip step 3. Be carefull to not create a privileged LXC.
 
 ---
 
@@ -54,8 +56,7 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
 1. Get this folder to your docker host:
    ```bash
    git clone <repository-url>
-   mv homelab/tailscale-exit-node/ tailscale-exit-node/
-   cd tailscale-exit-node/
+   cd homelab/tailscale-exit-node/
    ```
 
 2. Make the provided `enable_ip_forwarding.sh` script executable and execute it to configure IP forwarding:
