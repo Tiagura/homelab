@@ -1,7 +1,6 @@
 # Tailscale Docker Exit Node
 
-This repository provides the configuration files needed to set up a Tailscale Docker container as an exit node, allowing secure access to your home network through Tailscale.
-This setup is desinged to work on Proxmox using an unprivileged LXC container with Docker installed. However this setup will probably work with any docker host.
+This repository contains the necessary configuration files to set up a Tailscale Docker container as an exit node, enabling secure access to your home network via Tailscale. While this setup is designed to run on Proxmox using an unprivileged LXC container with Docker installed, it should work on any Docker host.
 
 ## Setup Steps
 
