@@ -18,20 +18,6 @@ This folder contains the configuration files, scripts, and SSL certificates for 
 │   └── setup.sh		# Script to install needed tools for backup
 └── ssl/            # Folder for certificates
 ```
-## Reverse Proxy Setup for Vaultwarden
-
-Vaultwarden is deployed behind a local Nginx reverse proxy to ensure it is only accessible via a specified domain, preventing direct access through the server’s IP address. Any requests with an incorrect `Host` header will be blocked with a `403 Forbidden` error. This setup enforces secure HTTPS access, restricting Vaultwarden to the domain you’ve configured.
-
-![Local Reverse Proxy Setup](images/localproxy.png)
-
-The **Nginx configuration** is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). It allows secure access to your Vaultwarden instance using a custom domain name.
-
-### Configuring Access
-
-
-
-
-
 
 ## Reverse Proxy Setup for Vaultwarden
 
