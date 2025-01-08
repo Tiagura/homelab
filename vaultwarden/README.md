@@ -25,13 +25,34 @@ Vaultwarden is deployed with Nginx as a reverse proxy, ensuring it is only acces
 
 The **Nginx configuration** used is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). This configuration allows you to securely access your Vaultwarden instance through a domain name.
 
+## Reverse Proxy
+
+Vaultwarden is deployed with Nginx as a reverse proxy, ensuring it is only accessible through the specified domain and not by the server's IP address. Any requests with an incorrect `Host` header are blocked with a `403 Forbidden` error. The configuration also enforces secure HTTPS access, restricting Vaultwarden to the specified domain only.
+
+![Local Reverse Proxy Setup](images/localproxy.png)
+
+The **Nginx configuration** used is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). This configuration allows you to securely access your Vaultwarden instance through a domain name.
+
+To increase security or if you have a general reverse proxy for your services, change the following lines to the `nginx.conf` file under the appropriate location block:
+
+***
+allow <general_reverse_proxy_ip>;
+deny all;
+***
+
+This ensures that only the general reverse proxy server can communicate with the local nginx and therefore the vaultwarden service.
+
+![Dual Reverse Proxy Setup](images/dualproxy.png)
+
+>**Note**: If your setup includes only a local reverse proxy ([image](images/localproxy.png)), you must remove these lines to allow your devices to access Vaultwarden.
+
 ### Accessing Vaultwarden
 
-Per my configuration, Vaultwarden can be accessed using a domain like:
+Per my configuration, Vaultwarden can only be accessed using a domain like:
 
-`vaultwarden.home.tm`
+`vaultwarden.example.com`
 
-If you wish to use a different domain name, you need to update the `DOMAIN` variable in the `docker-compose.yml` file and modify the `nginx.conf` file. Specifically, change the `server_name` directive and any other occurrences of the domain name to reflect your desired domain.
+To use your different domain name, you need to update the `DOMAIN` variable in the `docker-compose.yml` file and modify the `nginx.conf` file. Specifically, change the `server_name` directive and any other occurrences of the domain name to reflect your desired domain.
 
 ### SSL Certificates
 
@@ -59,17 +80,22 @@ If you do not already have SSL certificates, you can generate a self-signed cert
 2. Run the following OpenSSL command to generate the certificate and private key:
 
     ```bash
-    openssl req -new -x509 -sha256 -days 365 -keyout vaultwarden.key -out vaultwarden.crt
+    openssl req -new -x509 -sha256 -days 365 -keyout vaultwarden.key -out vaultwarden.crt -nodes
     ```
 
     - This will generate a `vaultwarden.crt` (certificate) and `vaultwarden.key` (private key) in the `ssl/` directory.
     - The `-days 365` option will make the certificate valid for one year, but you can adjust this as needed.
+    
+> **Note**: If you follow this the private key is unencrypted. This is usefull in a reverse proxy with SSL certificates using Docker, where entering a passphrase each time the service starts would be inconvenient.
 
 3. When prompted, provide the necessary details for the certificate, such as country, state, and organization. The `Common Name` should match the domain you'll be using for Vaultwarden.
 
 4. Once generated, make sure the certificate and key files are placed in the `ssl/` directory, and update the paths in the `nginx.conf` file if necessary.
 
+### Let's Encrypt Certificates
 
+Instead of self-signed certs, the usage of [Let's Encrypt](https://letsencrypt.org/) can also be done. However, the nginx.conf file needs to be modified for this. Search the internet for this.
+ 
 ## Backup Vaultwarden
 
 ### Required Tools for Backup

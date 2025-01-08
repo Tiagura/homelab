@@ -1,0 +1,22 @@
+services:
+  tailscale:
+    image: tailscale/tailscale:latest
+    hostname: ${TS_HOSTNAME}		# Specified hostname for the node
+    container_name: tailscale-exit
+    environment:
+      - TS_ACCEPT_DNS=false		# Recomended on https://tailscale.com/kb/1133/proxmox#resolvconf-within-lxc
+      - TS_AUTHKEY=${TS_AUTHKEY}	# Auth key used to authenticate the container
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container --advertise-exit-node
+      - TS_ROUTES=${TS_ROUTES}		# Advertise subnet routes
+      - TS_STATE_DIR=/var/lib/tailscale # Required to create a persistent container state
+      - TS_USERSPACE=false		# Disable userspace networking
+    volumes:
+      - ${PWD}/state:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+      - sys_module
+    network_mode: host
+    restart: unless-stopped
+
