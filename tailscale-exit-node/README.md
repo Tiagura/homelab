@@ -28,7 +28,7 @@ This repository contains the necessary configuration files to set up a Tailscale
 
      
 2. **Install Git**:
-  In the LXC shell do:
+  In the docker host shell/bash do:
    ```bash
    sudo apt install git
    git --version
@@ -49,7 +49,7 @@ This repository contains the necessary configuration files to set up a Tailscale
 
 ---
 
-### 2. Configure the LXC and adapt files
+### 2. Configure the host and adapt files
 1. Get this folder to your docker host:
    ```bash
    git clone <repository-url>
