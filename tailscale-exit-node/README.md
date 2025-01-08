@@ -11,29 +11,29 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
 1. **Access to the /dev/tun device** for LXC only:
   Based on [official documentation](https://tailscale.com/kb/1130/lxc-unprivileged), in the Proxmox main shell do:
   1. Stop the container:
-     ***bash
+     ```bash
      pct stop <container_id>
-     ***
+     ```
   2. Edit the LXC configuration file:
-     ***bash
+     ```bash
      nano /etc/pve/lxc/<container_id>.conf
-     ***
+     ```
   3. Add the following lines:
-     ***ini
+     ```bash
      lxc.cgroup2.devices.allow: c 10:200 rwm
      lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
-     ***
+     ```
   4. Start the container:
-     ***bash
+     ```bash
      pct start <container_id>
-     ***
+     ```
      
 2. **Install Git**:
   In the LXC shell do:
-   ***bash
+   ```bash
    sudo apt install git
    git --version
-   ***
+   ```
    
 3. **Install Docker and Docker Compose**:
    Refer to the [official documentation](https://docs.docker.com/engine/install/debian/).
@@ -52,17 +52,17 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
 
 ### 2. Configure the LXC and adapt files
 1. Get this folder to your docker host:
-   ***bash
+   ```bash
    git clone <repository-url>
    mv homelab/tailscale-exit-node/ tailscale-exit-node/
    cd tailscale-exit-node/
-   ***
+   ```
 
 2. Make the provided `enable_ip_forwarding.sh` script executable and execute it to configure IP forwarding:
-   ***bash
+   ```bash
    chmod +x enable_ip_forwarding.sh
    sudo bash enable_ip_forwarding.sh
-   ***
+   ```
    
 > **Note**: Don't forget to also enable IP forwarding if in proxmox
    
@@ -74,24 +74,24 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
    - `TS_DEST_IP`: Proxy all incoming Tailscale traffic to the specified destination IP. Only this param if you have a proxy in your local network. 
 
    Example `.env` file:
-   ***ini
+   ```ini
    TS_AUTHKEY=your_tailscale_auth_key
    TS_HOSTNAME=exit-node
    TS_ROUTES=192.168.1.0/24
    TS_DEST_IP=<proxy private ip ex: 192.168.1.111>
-   ***
+   ```
 
    Ensure this file is in the same directory as the `docker-compose.yml` file.
 
 4. Start the Tailscale Docker container:
-   ***bash
+   ```bash
    docker compose up -d
-   ***
+   ```
 
 5. Check the logs of the Tailscale container to verify it is running correctly:
-   ***bash
+   ```bash
    docker logs tailscale-exit
-   ***
+   ```
 
 6. If any errors are encountered, refer to the **Troubleshooting** section below.
 
@@ -118,11 +118,11 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
   1. Log in to the [Tailscale Admin Console](https://login.tailscale.com/admin/acls/file).
   2. Navigate to the **Access Controls** section and locate the `tagOwners` ACL.
   3. Ensure the tag `tag:container` is defined and assigned to an owner. For example:
-     ***json
+     ```json
      "tagOwners": {
          "tag:container": ["autogroup:admin"]
      }
-     ***
+     ```
   4. Save and apply the changes.
 
 ---
