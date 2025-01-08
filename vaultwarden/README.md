@@ -33,14 +33,12 @@ Vaultwarden is deployed with Nginx as a reverse proxy, ensuring it is only acces
 
 The **Nginx configuration** used is based on the example provided in the [Vaultwarden Proxy Examples Wiki](https://github.com/dani-garcia/vaultwarden/wiki/Proxy-examples). This configuration allows you to securely access your Vaultwarden instance through a domain name.
 
-To increase security or if you have a general reverse proxy for your services, change the following lines to the `nginx.conf` file under the appropriate location block:
+If you have a general proxy for your services and you only want this proxy to access vaultwarden, change the following lines of the `nginx.conf` file under the appropriate location block:
 
-***
+```
 allow <general_reverse_proxy_ip>;
 deny all;
-***
-
-This ensures that only the general reverse proxy server can communicate with the local nginx and therefore the vaultwarden service.
+```
 
 ![Dual Reverse Proxy Setup](images/dualproxy.png)
 
