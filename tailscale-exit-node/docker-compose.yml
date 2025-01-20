@@ -9,7 +9,6 @@ services:
       - TS_EXTRA_ARGS=--advertise-tags=tag:container --advertise-exit-node
       - TS_ROUTES=${TS_ROUTES}		# Advertise subnet routes
       - TS_STATE_DIR=/var/lib/tailscale # Required to create a persistent container state
-      - TS_USERSPACE=false		# Disable userspace networking
     volumes:
       - ${PWD}/state:/var/lib/tailscale
     devices:

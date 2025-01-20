@@ -47,8 +47,6 @@ This repository contains the necessary configuration files to set up a Tailscale
 
 > **Note**: If on proxmox and whish to use an LXC, consider using [Proxmox VE Helper-Scripts](https://community-scripts.github.io/ProxmoxVE/scripts), more specifically this [one](https://community-scripts.github.io/ProxmoxVE/scripts?id=docker), to create the LXC container and also skip step 3. Be carefull to not create a privileged LXC.
 
----
-
 ### 2. Configure the host and adapt files
 1. Get this folder to your docker host:
    ```bash
@@ -69,18 +67,18 @@ This repository contains the necessary configuration files to set up a Tailscale
    - `TS_AUTHKEY`: The Tailscale Auth Key you generated earlier.
    - `TS_HOSTNAME`: The hostname to be assigned to this node in the Tailscale network.
    - `TS_ROUTES`: The subnet routes you want this node to advertise.
-   - `TS_DEST_IP`: Proxy all incoming Tailscale traffic to the specified destination IP. Only this param if you have a proxy in your local network. 
 
    Example `.env` file:
    ```ini
    TS_AUTHKEY=your_tailscale_auth_key
    TS_HOSTNAME=exit-node
    TS_ROUTES=192.168.1.0/24
-   TS_DEST_IP=<proxy private ip ex: 192.168.1.111>
    ```
 
    Ensure this file is in the same directory as the `docker-compose.yml` file.
-
+   
+   > **Note**: If your network has a reverse proxy and you want to access your network services only through the proxy set `TS_ROUTES` to `<Reverse Proxy IP>/32`
+   
 4. Start the Tailscale Docker container:
    ```bash
    docker compose up -d
@@ -93,7 +91,6 @@ This repository contains the necessary configuration files to set up a Tailscale
 
 6. If any errors are encountered, refer to the **Troubleshooting** section below.
 
----
 
 ### 3. Work in the Tailscale Admin Console
 1. Log in to the [Tailscale Admin Console](https://login.tailscale.com/admin/machines).
@@ -104,7 +101,6 @@ This repository contains the necessary configuration files to set up a Tailscale
    - Tick the option to use this machine as an exit node.
 4. Save the changes.
 
----
 
 ## Troubleshooting
 
@@ -122,8 +118,6 @@ This repository contains the necessary configuration files to set up a Tailscale
      }
      ```
   4. Save and apply the changes.
-
----
 
 ## Custom DNS Setup
 
@@ -147,7 +141,20 @@ This ensures:
 
 > **Note**: In this setup, only Split DNS is used.
 
----
+## Use the exit node
+
+To route traffic through the exit node:
+
+1. **Find the Exit Node IP**:
+   - Go to the [Tailscale Admin Dashboard](https://login.tailscale.com/admin/machines).
+   - Locate the machine tagged with `container` and the hostname defined in `TS_HOSTNAME`.
+   - Note the machine's IP address.
+
+2. **Configure Exit Node on Linux Client**:
+   On your client machine, run:
+   ```bash
+   sudo tailscale up --exit-node=<EXIT_NODE_IP> --accept-routes
+   ```
 
 ## Additional Notes
 
