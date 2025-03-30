@@ -30,7 +30,7 @@ The service part of the network, hosted in the docker-host VM, is composed of th
 The monitor part of the network consists of the **monitor-stack**, hosted in the monitor-host VM, and an **LXC container running Zabbix** for monitoring metrics. Other monitoring tools, such as **Grafana, Prometheus, Loki**, are also part of this stack.
 
 ### **Remote Access**
-The network includes a **Tailscale Exit Node** running in an LXC container for secure remote access. For the setup check [here](tailscale-exit-node)
+The network includes a **Tailscale Exit Node** running in an LXC container for secure remote access. For the setup check [here](tailscale-exit-node).
 
 ### **Local DNS Server**
 **Pi-hole** on the Raspberry Pi 3B for local DNS resolution and ad blocking.
