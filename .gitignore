@@ -1,9 +1,3 @@
-# Ignore SSL certificates
-vaultwarden/ssl/
-
-# Ignore data folder
-vaultwarden/ssl/
-
 # Ignore other sensitive files
 *.crt
 *.csr
@@ -11,4 +5,7 @@ vaultwarden/ssl/
 
 # Ignore logs or temporary files
 *.log
+
+# Ignore .env files
+*.env
 

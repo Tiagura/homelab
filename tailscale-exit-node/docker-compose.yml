@@ -1,14 +1,16 @@
 services:
   tailscale:
     image: tailscale/tailscale:latest
-    hostname: ${TS_HOSTNAME}		# Specified hostname for the node
+    hostname: ${TS_HOSTNAME}            # Specified hostname for the node
     container_name: tailscale-exit
     environment:
-      - TS_ACCEPT_DNS=false		# Recomended on https://tailscale.com/kb/1133/proxmox#resolvconf-within-lxc
-      - TS_AUTHKEY=${TS_AUTHKEY}	# Auth key used to authenticate the container
+      - TS_ACCEPT_DNS=false             # Don't use MagicDNS in this node
+      - TS_AUTHKEY=${TS_AUTHKEY}        # Auth key used to authenticate the container
       - TS_EXTRA_ARGS=--advertise-tags=tag:container --advertise-exit-node
-      - TS_ROUTES=${TS_ROUTES}		# Advertise subnet routes
+      - TS_ROUTES=${TS_ROUTES}          # Advertise subnet routes
       - TS_STATE_DIR=/var/lib/tailscale # Required to create a persistent container state
+      - TS_ENABLE_METRICS= true         # Enable unauthenticated /metrics endpoint at the address specified by TS_LOCAL_ADDR_PORT
+      - TS_LOCAL_ADDR_PORT=5252
     volumes:
       - ${PWD}/state:/var/lib/tailscale
     devices:
@@ -18,4 +20,6 @@ services:
       - sys_module
     network_mode: host
     restart: unless-stopped
+    #entrypoint: [ "sh", "-c", "tailscale web --listen 0.0.0.0:5252 -readonly=true"]
+    #entrypoint: [ "tailscale", "web", "--listen", "0.0.0.0:5252", "-readonly=true" ]
 

@@ -1,38 +1,41 @@
 # Tailscale Docker Exit Node
 
-This repository contains the necessary configuration files to set up a Tailscale Docker container as an exit node, enabling secure access to your home network via Tailscale. While this setup is designed to run on Proxmox using an unprivileged LXC container with Docker installed, it should work on any Docker host.
+This repository provides the configuration files needed to set up a Tailscale Docker container as an exit node, allowing secure access to your home network through Tailscale.
+
+This setup is desinged to work on Proxmox using an unprivileged LXC container with Docker installed, however it should work with any docker host.
+---
 
 ## Setup Steps
 
 ### 1. Prerequisites
-1. **Access to the /dev/tun device** for LXC only: <br>
-   Based on [official documentation](https://tailscale.com/kb/1130/lxc-unprivileged), in the Proxmox main shell do: <br>
-
-   1. Stop the container:
-      ```bash
-      pct stop <container_id>
-      ```
-   2. Edit the LXC configuration file:
-      ```bash
-      nano /etc/pve/lxc/<container_id>.conf
-      ```
-   3. Add the following lines:
-      ```bash
-      lxc.cgroup2.devices.allow: c 10:200 rwm
-      lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
-      ```
-   4. Start the container:
-      ```bash
-      pct start <container_id>
-      ```
-
+1. **Access to the /dev/tun device**:
+  Based on [official documentation](https://tailscale.com/kb/1130/lxc-unprivileged), in the Proxmox main shell do:
+  1. Stop the container:
+     ***bash
+     pct stop <container_id>
+     ***
+  2. Edit the LXC configuration file:
+     ***bash
+     nano /etc/pve/lxc/<container_id>.conf
+     ***
+  3. Add the following lines:
+     ***ini
+     lxc.cgroup2.devices.allow: c 10:200 rwm
+     lxc.mount.entry: /dev/net/tun dev/net/tun none bind,create=file
+     ***
+  4. Start the container:
+     ***bash
+     pct start <container_id>
+     ***
+     
+  > **Note**: This is the procedure for unprivileged LXCs only, for other cases search the web.   
      
 2. **Install Git**:
-  In the docker host shell/bash do:
-   ```bash
+  In the LXC shell do:
+   ***bash
    sudo apt install git
    git --version
-   ```
+   ***
    
 3. **Install Docker and Docker Compose**:
    Refer to the [official documentation](https://docs.docker.com/engine/install/debian/).
@@ -45,22 +48,22 @@ This repository contains the necessary configuration files to set up a Tailscale
    - Copy the generated key, as it will be required for authentication.
    
 
-> **Note**: If on proxmox and whish to use an LXC, consider using [Proxmox VE Helper-Scripts](https://community-scripts.github.io/ProxmoxVE/scripts), more specifically this [one](https://community-scripts.github.io/ProxmoxVE/scripts?id=docker), to create the LXC container and also skip step 3. Be carefull to not create a privileged LXC.
+> **Note**: To create the LXC and also skip step 3, consider using [Proxmox VE Helper-Scripts](https://community-scripts.github.io/ProxmoxVE/scripts), more specifically this [one] (https://community-scripts.github.io/ProxmoxVE/scripts?id=docker). Be carefull no not create a privileged LXC.
 
-### 2. Configure the host and adapt files
-1. Get this folder to your docker host:
-   ```bash
+---
+
+### 2. Enable the Configuration
+1. Clone this repository to your LXC:
+   ***bash
    git clone <repository-url>
    cd homelab/tailscale-exit-node/
-   ```
+   ***
 
 2. Make the provided `enable_ip_forwarding.sh` script executable and execute it to configure IP forwarding:
-   ```bash
+   ***bash
    chmod +x enable_ip_forwarding.sh
    sudo bash enable_ip_forwarding.sh
-   ```
-   
-> **Note**: Don't forget to also enable IP forwarding if in proxmox
+   ***
    
 3. Set the Docker Environment Variables:
    Create the `.env` file with the following required variables:
@@ -69,28 +72,27 @@ This repository contains the necessary configuration files to set up a Tailscale
    - `TS_ROUTES`: The subnet routes you want this node to advertise.
 
    Example `.env` file:
-   ```ini
+   ***ini
    TS_AUTHKEY=your_tailscale_auth_key
    TS_HOSTNAME=exit-node
    TS_ROUTES=192.168.1.0/24
-   ```
+   ***
 
    Ensure this file is in the same directory as the `docker-compose.yml` file.
-   
-   > **Note**: If your network has a reverse proxy and you want to access your network services only through the proxy set `TS_ROUTES` to `<Reverse Proxy IP>/32`
-   
+
 4. Start the Tailscale Docker container:
-   ```bash
+   ***bash
    docker compose up -d
-   ```
+   ***
 
 5. Check the logs of the Tailscale container to verify it is running correctly:
-   ```bash
+   ***bash
    docker logs tailscale-exit
-   ```
+   ***
 
 6. If any errors are encountered, refer to the **Troubleshooting** section below.
 
+---
 
 ### 3. Work in the Tailscale Admin Console
 1. Log in to the [Tailscale Admin Console](https://login.tailscale.com/admin/machines).
@@ -101,6 +103,7 @@ This repository contains the necessary configuration files to set up a Tailscale
    - Tick the option to use this machine as an exit node.
 4. Save the changes.
 
+---
 
 ## Troubleshooting
 
@@ -112,12 +115,14 @@ This repository contains the necessary configuration files to set up a Tailscale
   1. Log in to the [Tailscale Admin Console](https://login.tailscale.com/admin/acls/file).
   2. Navigate to the **Access Controls** section and locate the `tagOwners` ACL.
   3. Ensure the tag `tag:container` is defined and assigned to an owner. For example:
-     ```json
+     ***json
      "tagOwners": {
          "tag:container": ["autogroup:admin"]
      }
-     ```
+     ***
   4. Save and apply the changes.
+
+---
 
 ## Custom DNS Setup
 
@@ -126,11 +131,11 @@ If you want to use a custom DNS server (e.g., Pi-Hole) with Tailscale, there are
 - **Full DNS**: Tailscale sends all DNS queries through your custom DNS server.
 
 ### Split DNS Configuration
-In this setup, Tailscale will use your custom DNS server (e.g., Pi-Hole) **only** for resolving queries related to your advertised subnets or specific local domains.
+In this setup, Tailscale will use your custom DNS server (e.g., Pi-Hole) **only** for resolving queries related to your local domains.
 
 1. Navigate to the [DNS settings](https://login.tailscale.com/admin/dns).
 2. In the **Nameserver** section:
-   - Add your local domain (e.g., `myhome.local`).
+   - Add your local domain.
    - Specify the IP address of your DNS server as the DNS server for that domain.
    - Tick the **Split DNS** option.
 3. Save the configuration.
@@ -141,25 +146,11 @@ This ensures:
 
 > **Note**: In this setup, only Split DNS is used.
 
-## Use the exit node
-
-To route traffic through the exit node:
-
-1. **Find the Exit Node IP**:
-   - Go to the [Tailscale Admin Dashboard](https://login.tailscale.com/admin/machines).
-   - Locate the machine tagged with `container` and the hostname defined in `TS_HOSTNAME`.
-   - Note the machine's IP address.
-
-2. **Configure Exit Node on Linux Client**:
-   On your client machine, run:
-   ```bash
-   sudo tailscale up --exit-node=<EXIT_NODE_IP> --accept-routes
-   ```
+---
 
 ## Additional Notes
 
 - Refer to Tailscale's official documentation for more details:
   - [Using Docker with Tailscale](https://tailscale.com/kb/1282/docker)
-  - [Proxmox Troubleshooting](https://tailscale.com/kb/1133/proxmox#troubleshooting)
   - [Exit Nodes in Tailscale](https://tailscale.com/kb/1103/exit-nodes)
-  - [DNS Settings](https://tailscale.com/kb/1054/dns)
+  - [DNS Settings](https://tailscale.com/kb/1103/dns)
