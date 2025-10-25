@@ -33,7 +33,7 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
       pct start <container_id>
       ```
 
-> **Note**: This procedure applies only to unprivileged LXCs. For other cases, search the web.   
+   > **Note**: This procedure applies only to unprivileged LXCs. For other cases, search the web.   
      
 2. **Install Git**:
   In the LXC shell do:
@@ -53,7 +53,7 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
    - Copy the generated key, as it will be required for authentication.
    
 
-> **Note**: To create the LXC and also skip step 3, consider using [Proxmox VE Helper-Scripts](https://community-scripts.github.io/ProxmoxVE/scripts), more specifically this [one] (https://community-scripts.github.io/ProxmoxVE/scripts?id=docker). Be carefull no not create a privileged LXC.
+> **Note**: To create the LXC with Docker installed (skipping step 3) consider using [Proxmox VE Helper-Scripts](https://community-scripts.github.io/ProxmoxVE/scripts), more specifically this [one] (https://community-scripts.github.io/ProxmoxVE/scripts?id=docker). Be carefull no not create a privileged LXC.
 
 ---
 
