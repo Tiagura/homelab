@@ -1,0 +1,39 @@
+services:
+  dns-server:
+    image: technitium/dns-server:latest
+    container_name: dns-server
+    restart: unless-stopped
+    ports:
+      - "5380:5380/tcp"   # DNS web console (HTTP)
+      - "53443:53443/tcp" # DNS web console (HTTPS)
+      - "53:53/udp" # DNS Service
+      - "53:53/tcp" # DNS Servicer
+      - "853:853/udp" #DNS-over-QUIC service
+      - "853:853/tcp" #DNS-over-TLS service
+      - "443:443/udp" #DNS-over-HTTPS service (HTTP/3)
+      - "443:443/tcp" #DNS-over-HTTPS service (HTTP/1.1, HTTP/2)
+    environment:
+      - DNS_SERVER_WEB_SERVICE_HTTP_PORT=5380
+      - DNS_SERVER_DOMAIN=${SERVER_NAME}
+      - DNS_SERVER_ADMIN_PASSWORD=${ADMIN_PASSWORD}
+      - DNS_SERVER_RECURSION=UseSpecifiedNetworkACL
+      - DNS_SERVER_RECURSION_NETWORK_ACL=${ALLOWED_NETWORKS}
+      - DNS_SERVER_FORWARDERS=https://dns.quad9.net/dns-query
+      - DNS_SERVER_FORWARDER_PROTOCOL=Https
+    volumes:
+      - ./technitium/config:/etc/dns
+      - ./technitium/logs:/var/log/technitium/dns
+
+  keepalived:
+    image: osixia/keepalived:latest
+    container_name: keepalived
+    restart: unless-stopped
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_BROADCAST
+      - NET_RAW
+    environment:
+      - KEEPALIVED_CONF=/etc/keepalived/keepalived.conf
+    volumes:
+      - ./keepalived/keepalived.conf:/etc/keepalived/keepalived.conf:ro

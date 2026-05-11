@@ -132,7 +132,7 @@ This setup is desinged to work on Proxmox using an unprivileged LXC container wi
 ## Custom DNS Setup
 
 If you want to use a custom DNS server (e.g., Pi-Hole) with Tailscale, there are two ways to configure it:
-- **Split DNS**: Tailscale only uses your custom DNS server for specific sub-routes or domains (e.g., `myhome.local`).
+- **Split DNS**: Tailscale only uses your custom DNS server for specific sub-routes or domains (e.g., `mydomain.com`).
 - **Full DNS**: Tailscale sends all DNS queries through your custom DNS server.
 
 ### Split DNS Configuration
